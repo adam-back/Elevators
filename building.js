@@ -44,6 +44,27 @@ var Building = function( numberOfFloors ) {
     return void( 0 );
   };
 
+  this.moveElevators = function() {
+    for ( var i = 0; i < this.elevators.length; i++ ) {
+      var elevator = this.elevators[ i ];
+      var currentTrip = elevator.destinations[ 0 ];
+      //  ignore elevators which are in maintenance mode or have no destinations
+      if ( elevator.maintenanceMode || elevator.destinations.length === 0 ) {
+        continue;
+      // elevator moving
+      } else if ( currentTrip.moving ) {
+        elevator.move();
+      // on floor for pickup
+      } else if ( on floor for pickup ) {
+        elevator.pickup();
+      } else if ( on floor for dropoff ) {
+        elevator.dropoff();
+      }
+    }
+
+    return void( 0 );
+  };
+
   // step-by-step to conceptualize movement
   setTimeout(function() {
     this.delegateNewRequests();
@@ -58,5 +79,11 @@ Building.prototype.addElevator = function() {
 };
 
 Building.prototype.requestLift = function( currentFloor, destinationFloor ) {
-  this.requests.push( { start: currentFloor, destination: destinationFloor } );
+  if ( destinationFloor < 1 || destinationFloor > this.topFloor ) {
+    throw new Error( 'Elevators cannot go above top floor or below ground floor.' );
+  } else if ( currentFloor === destinationFloor ) {
+    console.log( 'No elevator requested. Current floor and destination are the same.' );
+  } else {
+    this.requests.push( { start: currentFloor, destination: destinationFloor } );
+  }
 };
