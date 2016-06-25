@@ -1,7 +1,7 @@
 // elevator class
-
-var Elevator = function() {
+var Elevator = function( topFloor ) {
   // start at ground floor
+  this.topFloor = topFloor;
   this.currentFloor = 1;
   this.destinations = [];
   this.moving = false;
@@ -38,3 +38,11 @@ Elevator.prototype.move = function() {
   }
 };
 
+Elevator.prototype.doMaintenance = function () {
+  this.moving = false;
+  this.maintenanceMode = true;
+
+  setTimeout(function() {
+    this.maintenanceMode = false;
+  }, 5000);
+};
