@@ -10,8 +10,8 @@ var Elevator = function( topFloor ) {
     trips: 0
   };
   this.maintenanceMode = false;
-  this.openDoor = function() {
-    console.log( 'Opening door to pick up passenger.' );
+  this.openDoor = function( message ) {
+    console.log( 'Opening door to ' + message + ' passenger.' );
   }
 };
 
@@ -36,6 +36,14 @@ Elevator.prototype.move = function() {
   } else {
     return;
   }
+};
+
+Elevator.prototype.pickup = function() {
+  this.openDoor( 'pick up' );
+}
+
+Elevator.prototype.dropoff = function() {
+  this.openDoor( 'drop off' );
 };
 
 Elevator.prototype.doMaintenance = function () {
