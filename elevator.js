@@ -3,9 +3,13 @@
 var Elevator = function() {
   // start at ground floor
   this.currentFloor = 1;
+  this.destination = null;
+  this.moving = false;
   this.moveToFloor = function( destinationFloor ) {
-    while( this.currentFloor !== destinationFloor ) {
-      if ( this.currentFloor < destinationFloor ) {
+    this.destination = destinationFloor;
+    this.moving = true;
+    while( this.currentFloor !== this.destinationFloor ) {
+      if ( this.currentFloor < this.destinationFloor ) {
         this.currentFloor++;
       } else {
         this.currentFloor--;
@@ -15,5 +19,7 @@ var Elevator = function() {
     }
 
     console.log( 'At destination. Opening doors.' );
+    this.destination = null;
+    this.moving = false;
   }
 };

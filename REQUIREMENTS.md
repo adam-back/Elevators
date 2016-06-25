@@ -35,3 +35,9 @@ Outputs:
 Constraints:
   - minimum floors, 1
   - elevator can't go above top or below bottom floor
+
+// 4
+// 3
+
+// 1  *
+-----------------------------------

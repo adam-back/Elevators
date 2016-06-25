@@ -1,6 +1,7 @@
-var createElevatorSim = function( numberOfFloors, elevators ) {
-  if ( numberOfFloors < 1 || elevators < 1 ) {
+var createElevatorSim = function( numberOfFloors, numberOfElevators ) {
+  if ( numberOfFloors < 1 || numberOfElevators < 1 ) {
     throw new Error( 'Minimum of one floor and elevator needed!' );
   }
 
+  return elevators;
 };
