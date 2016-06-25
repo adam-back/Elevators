@@ -1,4 +1,4 @@
-1. Initialize the elevator simulation with the desired number of elevators, and the desired number of floors. Assume ground/min of 1.
+X 1. Initialize the elevator simulation with the desired number of elevators, and the desired number of floors. Assume ground/min of 1.
 
 Since the elevators are moving, they should be the ones reporting
 2. Each elevator will report as is moves from floor to floor.
