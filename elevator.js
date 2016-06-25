@@ -38,12 +38,22 @@ Elevator.prototype.move = function() {
   }
 };
 
-Elevator.prototype.pickup = function() {
+Elevator.prototype.pickup = function( request ) {
   this.openDoor( 'pick up' );
+  request.hasPickedUpPassenger = true;
 }
 
 Elevator.prototype.dropoff = function() {
   this.openDoor( 'drop off' );
+  // passenger disembarks
+  ths.destinations.shift();
+
+  // check if elevator should go into maintenance mode
+  // only if there aren't more destinations, don't want to strand passengers
+  // not just any 100, but multiples of 100 FIX
+  if ( this.destinations.length === 0 && this.history.trips >= 100 ) {
+    this.doMaintenance();
+  }
 };
 
 Elevator.prototype.doMaintenance = function () {
