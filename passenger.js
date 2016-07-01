@@ -1,4 +1,13 @@
-var Passenger = function( startFloor ) {
+var Passenger = function( startFloor, building ) {
+  // cannot start on a floor above building max
+  if ( startFloor < 1 ) {
+    throw new Error( 'Cannot start below ground level (1).' );
+  }
+
+  if ( building.topFloor < startFloor ) {
+    throw new Error( 'Cannot start above top floor ('+ building.topFloor +').' );
+  }
+
   return {
     start: startFloor,
     direction: undefined,
@@ -16,7 +25,7 @@ Passenger.prototype.requestElevator = function( upOrDown ) {
   }
 };
 
-Passenger.prototype.pressDestinationButton = function( destination ) {
+Passenger.prototype.pressDestinationButton = function( destination, elevator ) {
   if ( !this.onElevator ) {
     throw new Error( 'Not on elevator yet.' );
   }
@@ -36,13 +45,13 @@ Passenger.prototype.pressDestinationButton = function( destination ) {
     this.destination = destination;
     this.onElevator = true;
     // register new destination on elevator
+    elevator.registerNewFloorSlection( destination );
   }
 };
 
-Passenger.prototype.disembark = function() {
-  this.start = // elevator current floor
+Passenger.prototype.disembark = function( elevator ) {
+  this.start = elevator.currentFloor;
   this.direction = undefined;
   this.onElevator = false;
   this.destination = undefined;
 };
-

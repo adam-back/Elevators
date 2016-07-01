@@ -1,6 +1,8 @@
 // building assigns elevators in this order:
 // 1: unoccupied elevator on that floor
 var lookForUnoccupiedElevatorOnFloor = function( elevators, request ) {
+  var matched = false;
+
   // loop through elevators
   for ( var j = 0; j < this.elevators.length; j++ ) {
     var elevator = this.elevators[ j ];
@@ -11,12 +13,54 @@ var lookForUnoccupiedElevatorOnFloor = function( elevators, request ) {
     } else if ( elevator.moving === false && elevator.currentFloor === request.start ) {
       // add request to that elevator
       elevator.startTrip( request.start, request.destination );
+      matched = true;
       break;
     }
   }
-}
+
+  return matched;
+};
 
 // 2: unoccupied elevator moving past
+var lookedForUnoccupiedElevatorMovingPast = function( elevators, request ) {
+  var matched = false;
+
+  var willMovePast = function( currentFloor )
+  // loop through elevators
+  for ( var j = 0; j < this.elevators.length; j++ ) {
+    var elevator = this.elevators[ j ];
+    //  ignore elevators which are in maintenance mode
+    if ( elevator.maintenanceMode || elevator.isOccupied() ) {
+      continue;
+    } else {
+      if ( elevator.moving ) {
+        var upOrDown = elevator.moving - elevator.currentFloor;
+        // moving 9
+        // currentFloor 2
+        // 9 - 2 = 7 up
+
+        // moving 3
+        // currentFloor 6
+        // 3 - 6 = -3 down
+
+
+
+
+      // elevator not moving or on floor
+      } else {
+        break;
+      }
+    } else if ( elevator.moving === false && elevator.currentFloor === request.start ) {
+      // add request to that elevator
+      elevator.startTrip( request.start, request.destination );
+      matched = true;
+      break;
+    }
+  }
+
+  return matched;
+};
+
 // 3: closest unoccupied elevator
 // ?4: all elevators occupied, moving past
 
@@ -30,8 +74,15 @@ var Building = function( numberOfFloors ) {
       // loop through requests to see if any unoccupied elevators are available on the floor
       for ( var i = 0; i < this.requests.length; i++ ) {
         var request = this.requests[ i ];
+        var matched = false;
         // NOT MOST EFFICIENT. O(n2) time complexity due to nested for loops
-        lookForUnoccupiedElevatorOnFloor( this.elevators, request );
+        matched = lookForUnoccupiedElevatorOnFloor( this.elevators, request );
+
+        if ( matched ) {
+          break;
+        } else {
+          matched = lookedForUnoccupiedElevatorMovingPast( this.elevators, request );
+        }
         // lookedForUnoccupiedElevatorMovingPast
         // findClosestUnassignedElevator
       }
