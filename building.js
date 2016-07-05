@@ -129,12 +129,6 @@ Building.prototype.addElevator = function() {
   return this.elevators.length;
 };
 
-Building.prototype.requestLift = function( currentFloor, destinationFloor ) {
-  if ( destinationFloor < 1 || destinationFloor > this.topFloor ) {
-    throw new Error( 'Elevators cannot go above top floor or below ground floor.' );
-  } else if ( currentFloor === destinationFloor ) {
-    console.log( 'No elevator requested. Current floor and destination are the same.' );
-  } else {
-    this.requests.push( { start: currentFloor, destination: destinationFloor } );
-  }
+Building.prototype.requestLift = function( upOrDown, startFloor ) {
+  this.requests.push( { direction: upOrDown, destination: startFloor } );
 };

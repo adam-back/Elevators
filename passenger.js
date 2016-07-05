@@ -16,12 +16,13 @@ var Passenger = function( startFloor, building ) {
   };
 };
 
-Passenger.prototype.requestElevator = function( upOrDown ) {
+Passenger.prototype.requestElevator = function( upOrDown, building ) {
   if ( this.onElevator ) {
     throw new Error ( 'Already on elevator.' );
   } else {
     this.direction = upOrDown;
     // dispatch to building requests
+    building.requestLift( upOrDown, this.startFloor );
   }
 };
 
