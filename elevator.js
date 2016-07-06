@@ -1,5 +1,6 @@
 // elevator class
-var Elevator = function( topFloor ) {
+var Elevator = function( id, topFloor ) {
+  this.id = id;
   // start at ground floor
   this.topFloor = topFloor;
   this.currentFloor = 1;
@@ -82,7 +83,7 @@ Elevator.prototype.dropoff = function() {
   // check if elevator should go into maintenance mode
   // only if there aren't more passengerDestinations, don't want to strand passengers
   // not just any 100, but multiples of 100 FIX
-  if ( this.passengerDestinations.length === 0 && this.history.trips >= 100 ) {
+  if ( this.passengers.length === 0 && this.history.trips >= 100 ) {
     this.doMaintenance();
   }
 };

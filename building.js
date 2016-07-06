@@ -66,11 +66,46 @@ var lookedForUnoccupiedElevatorMovingPast = function( elevators, request ) {
 
 var Building = function( numberOfFloors ) {
   this.requests = [];
-  this.elevators = [];
+  this.elevators = {
+    count: 0
+  };
+  this.elevatorMaintenance = {
+    count: 0
+  };
   this.topFloor = numberOfFloors;
 
+  this.serviceElevators = function() {
+    // move into maintenance
+    for ( var elevatorId in this.elevators ) {
+      var elevator = this.elevators[ elevatorId ];
+      // maintenance
+      if ( elevator.maintenanceMode === true ) {
+        // remove from active elevators
+        this.elevatorMaintenance[ elevator.id ] = elevator;
+        this.elevatorMaintenance.count++;
+        delete this.elevator[ elevator.id ];
+        this.elevators.count--;
+      }
+    }
+
+    // move out of maintanence back into active
+    for ( var elevatorId in this.elevatorMaintenance ) {
+      var elevator = this.elevatorMaintenance[ elevatorId ];
+      // maintenance
+      if ( elevator.maintenanceMode === false ) {
+        // remove from active elevators
+        this.elevators[ elevator.id ] = elevator;
+        this.elevators.count++;
+        delete this.elevatorMaintenance[ elevator.id ];
+        this.elevatorMaintenance.count--;
+      }
+    }
+
+    return this.elevators;
+  };
+
   this.delegateNewRequests = function() {
-    if ( this.requests.length > 0 ) {
+    if ( this.requests.length > 0 && this.elevators.count > 0 ) {
       // loop through requests to see if any unoccupied elevators are available on the floor
       for ( var i = 0; i < this.requests.length; i++ ) {
         var request = this.requests[ i ];
@@ -118,17 +153,19 @@ var Building = function( numberOfFloors ) {
 
   // step-by-step to conceptualize movement
   setTimeout(function() {
+    this.serviceElevators();
     this.delegateNewRequests();
     this.moveElevators();
   }, 1000);
 };
 
 Building.prototype.addElevator = function() {
-  // would have access to Elevator class
-  this.elevators.push( new Elevator( this.topFloor ) );
-  return this.elevators.length;
+  this.elevators.count++;
+  var elevator = new Elevator( this.elevators.count, this,topFloor );
+  this.elevators[ elevator.id ] = elevator;
+  return this.elevators.count;
 };
 
-Building.prototype.requestLift = function( upOrDown, startFloor ) {
-  this.requests.push( { direction: upOrDown, destination: startFloor } );
+Building.prototype.requestLift = function( passenger ) {
+  this.requests.push( passenger );
 };
