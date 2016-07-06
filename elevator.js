@@ -3,12 +3,14 @@ var Elevator = function( topFloor ) {
   // start at ground floor
   this.topFloor = topFloor;
   this.currentFloor = 1;
+  this.passengers = [];
+  this.destinations = {};
   this.floorList = Array( topFloor );
   for ( var i = 0; i < floorList.length; i++ ) {
     floorList[ i ] = 0;
+    this.destinations[ i + 1 ] = false;
   }
-  this.passengerDestinations = {};
-  this.pickupLocations = {};
+
   this.moving = false; // or the # of the floor moving towards
   this.direction = undefined;
   this.history = {
@@ -33,11 +35,11 @@ var Elevator = function( topFloor ) {
     } else {
       throw new Error( 'Must know which floor we\'re moving towards.' );
     }
-  }
+  };
 };
 
 Elevator.prototype.registerPickupRequest = function( pickupFloor ) {
-  this.pickupLocations[ pickupFloor ] = true;
+  this.destinations[ pickupFloor ] = true;
   this.history.trips++;
 
   if ( !moving ) {
@@ -47,8 +49,7 @@ Elevator.prototype.registerPickupRequest = function( pickupFloor ) {
 };
 
 Elevator.prototype.registerNewFloorSelection = function( floorNumber ) {
-  this.floorList[ floorNumber - 1 ]++;
-  this.passengerDestinations[ floorNumber ] = this.floorList[ floorNumber - 1 ];
+  this.destinations[ floorNumber ] = true;
 };
 
 Elevator.prototype.move = function() {

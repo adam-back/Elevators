@@ -1,53 +1,46 @@
-var Passenger = function( startFloor, building ) {
-  // cannot start on a floor above building max
-  if ( startFloor < 1 ) {
-    throw new Error( 'Cannot start below ground level (1).' );
-  }
-
-  if ( building.topFloor < startFloor ) {
-    throw new Error( 'Cannot start above top floor ('+ building.topFloor +').' );
-  }
-
-  return {
+var Passenger = function( startFloor, destination, building ) {
+  var props = {
     start: startFloor,
     direction: undefined,
     onElevator: false,
-    destination: undefined
+    destination: destination
   };
-};
 
-Passenger.prototype.requestElevator = function( upOrDown, building ) {
-  if ( this.onElevator ) {
-    throw new Error ( 'Already on elevator.' );
-  } else {
-    this.direction = upOrDown;
-    // dispatch to building requests
-    building.requestLift( upOrDown, this.startFloor );
-  }
-};
-
-Passenger.prototype.pressDestinationButton = function( destination, elevator ) {
-  if ( !this.onElevator ) {
-    throw new Error( 'Not on elevator yet.' );
+  // cannot start on a floor above building max
+  if ( startFloor < 1 || destination < 1 ) {
+    throw new Error( 'Too low.' );
   }
 
-  var differenceInFloors = this.start - destination;
+  if ( building.topFloor < startFloor || building.topFloor < destination ) {
+    throw new Error( 'Too high.' );
+  }
+
+  var differenceInFloors = startFloor - destination;
   // same floor
   if ( differenceInFloors === 0 ) {
     throw new Error( 'Select a different floor.' );
-  // direction up, but selection down
-  } else if ( this.direction === 'up' && differenceInFloors > 0 ) {
-    throw new Error( 'Select a different floor.' );
-  // direction down, but selection up
-  } else if ( this.direction === 'down' && differenceInFloors < 0 ) {
-    throw new Error( 'Select a different floor.' );
-  // good selection, go
+  } else if ( differenceInFloors > 0 ) {
+    props.direction = 'down';
   } else {
-    this.destination = destination;
-    this.onElevator = true;
-    // register new destination on elevator
-    elevator.registerNewFloorSlection( destination );
+    props.direction = 'up';
   }
+
+  return props;
+};
+
+// refactor so that Passenger requests on create with building bindings
+Passenger.prototype.requestElevator = function( building ) {
+  if ( this.onElevator ) {
+    throw new Error ( 'Already on elevator.' );
+  } else {
+    building.requestLift( this );
+  }
+};
+
+
+Passenger.prototype.boardElevator = function( elevator ) {
+  elevator.registerNewFloorSlection( destination );
+  this.onElevator = true;
 };
 
 Passenger.prototype.disembark = function( elevator ) {
@@ -55,4 +48,5 @@ Passenger.prototype.disembark = function( elevator ) {
   this.direction = undefined;
   this.onElevator = false;
   this.destination = undefined;
+  // remove from elevator
 };
